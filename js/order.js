@@ -40,41 +40,142 @@ if (preset) {
   document.querySelector(`input[value="${preset.id}"]`).checked = true;
 }
 
-// 2. 예약 날짜·시간 (내일부터 2주 안, 10:00 ~ 20:00)
-function toDateValue(d) {
-  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-}
+// 2. 예약 날짜·시간 (달력 + 시간표, 서버의 예약 현황을 15초마다 다시 불러옴)
+const POLL_MS = 15000;
+let avail = null; // { today, days: [{ date, closed, slots: [{ time, available }] }] }
+let viewMonth = ""; // 달력에 보이는 달 "YYYY-MM"
+let selectedDate = "";
+let selectedTime = "";
+let loadSeq = 0;
 
-const tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 1);
-const lastDay = new Date();
-lastDay.setDate(lastDay.getDate() + 14);
-$("pickup-date").min = toDateValue(tomorrow);
-$("pickup-date").max = toDateValue(lastDay);
+const dayOf = (date) => avail && avail.days.find((d) => d.date === date);
+const dateLabel = (date) => {
+  const d = new Date(date + "T00:00");
+  return `${d.getMonth() + 1}월 ${d.getDate()}일 (${"일월화수목금토"[d.getDay()]})`;
+};
 
-for (let h = 10; h <= 20; h++) {
-  for (const m of ["00", "30"]) {
-    if (h === 20 && m === "30") continue;
-    const t = String(h).padStart(2, "0") + ":" + m;
-    $("pickup-time").insertAdjacentHTML("beforeend", `<option value="${t}">${t}</option>`);
+async function loadAvailability() {
+  const seq = ++loadSeq;
+  try {
+    const res = await fetch("/api/availability?service=" + encodeURIComponent(selectedId));
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    if (seq !== loadSeq) return; // 더 최근 요청이 있으면 무시
+    avail = data;
+    if (!viewMonth) viewMonth = data.today.slice(0, 7);
+
+    // 고른 시간이 그새 마감됐으면 선택 해제
+    const slot = selectedTime && dayOf(selectedDate)?.slots.find((s) => s.time === selectedTime);
+    if (selectedTime && !slot?.available) {
+      selectedTime = "";
+      $("err-pickup").textContent = "선택하신 시간이 방금 마감됐어요. 다른 시간을 골라주세요.";
+      renderSummary();
+    }
+
+    const t = new Date().toLocaleTimeString("ko-KR", { hour: "numeric", minute: "2-digit", second: "2-digit" });
+    $("live-status").textContent = `실시간 예약 현황 · ${t} 기준`;
+    $("live-status").className = "live on";
+  } catch {
+    if (seq !== loadSeq) return;
+    $("live-status").textContent = "예약 현황을 불러오지 못했어요. 잠시 후 다시 시도합니다.";
+    $("live-status").className = "live off";
   }
+  renderCalendar();
+  renderSlots();
 }
+
+function renderCalendar() {
+  if (!avail) return;
+  const [y, m] = viewMonth.split("-").map(Number);
+  const first = new Date(y, m - 1, 1);
+  const lastDate = new Date(y, m, 0).getDate();
+  $("cal-title").textContent = `${y}년 ${m}월`;
+
+  let html = "<span></span>".repeat(first.getDay());
+  for (let d = 1; d <= lastDate; d++) {
+    const date = `${viewMonth}-${String(d).padStart(2, "0")}`;
+    const day = dayOf(date);
+    const open = day && !day.closed && day.slots.some((s) => s.available);
+    const note = !day ? "" : day.closed ? "휴무" : open ? "" : "마감";
+    const cls = ["cal-day", "w" + new Date(y, m - 1, d).getDay()];
+    if (date === avail.today) cls.push("today");
+    if (date === selectedDate) cls.push("selected");
+    html += `<button type="button" class="${cls.join(" ")}" data-date="${date}" ${open ? "" : "disabled"}>
+      ${d}<small>${note}</small></button>`;
+  }
+  $("cal-grid").innerHTML = html;
+
+  const months = avail.days.map((d) => d.date.slice(0, 7));
+  $("cal-prev").disabled = viewMonth <= months[0];
+  $("cal-next").disabled = viewMonth >= months[months.length - 1];
+}
+
+function renderSlots() {
+  const day = dayOf(selectedDate);
+  if (!day) {
+    $("slots-title").textContent = "날짜를 선택해 주세요.";
+    $("slots").innerHTML = "";
+    return;
+  }
+  $("slots-title").textContent = dateLabel(selectedDate) + (selectedId ? "" : " · 시술을 고르면 시술 시간에 맞춰 다시 보여드려요");
+
+  const group = (label, slots) =>
+    slots.length
+      ? `<p class="slot-group">${label}</p><div class="slot-grid">${slots
+          .map(
+            (s) => `<button type="button" class="slot${s.time === selectedTime ? " selected" : ""}"
+              data-time="${s.time}" ${s.available ? "" : "disabled"}>${s.time}</button>`
+          )
+          .join("")}</div>`
+      : "";
+  $("slots").innerHTML =
+    group("오전", day.slots.filter((s) => s.time < "12:00")) + group("오후", day.slots.filter((s) => s.time >= "12:00"));
+}
+
+$("cal-grid").addEventListener("click", (e) => {
+  const btn = e.target.closest(".cal-day");
+  if (!btn || btn.disabled) return;
+  selectedDate = btn.dataset.date;
+  selectedTime = "";
+  $("err-pickup").textContent = "";
+  renderCalendar();
+  renderSlots();
+  renderSummary();
+});
+
+$("slots").addEventListener("click", (e) => {
+  const btn = e.target.closest(".slot");
+  if (!btn || btn.disabled) return;
+  selectedTime = btn.dataset.time;
+  $("err-pickup").textContent = "";
+  renderSlots();
+  renderSummary();
+});
+
+function moveMonth(diff) {
+  const [y, m] = viewMonth.split("-").map(Number);
+  const d = new Date(y, m - 1 + diff, 1);
+  viewMonth = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+  renderCalendar();
+}
+$("cal-prev").addEventListener("click", () => moveMonth(-1));
+$("cal-next").addEventListener("click", () => moveMonth(1));
+
+// 시술마다 걸리는 시간이 달라서, 시술을 바꾸면 예약 가능 시간도 다시 불러옴
+$("menu-list").addEventListener("change", loadAvailability);
+
+setInterval(() => {
+  if (!document.hidden) loadAvailability();
+}, POLL_MS);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) loadAvailability();
+});
+loadAvailability();
 
 function pickupText() {
-  const date = $("pickup-date").value;
-  const time = $("pickup-time").value;
-  if (!date || !time) return "";
-  const d = new Date(date + "T00:00");
-  const day = "일월화수목금토"[d.getDay()];
-  return `${d.getMonth() + 1}월 ${d.getDate()}일 (${day}) ${time}`;
+  if (!selectedDate || !selectedTime) return "";
+  return `${dateLabel(selectedDate)} ${selectedTime}`;
 }
-
-["pickup-date", "pickup-time"].forEach((id) =>
-  $(id).addEventListener("change", () => {
-    $("err-pickup").textContent = "";
-    renderSummary();
-  })
-);
 
 // 3. 쿠폰 (메인에서 받은 코드가 있으면 자동으로 채우기)
 function applyCoupon() {
@@ -133,13 +234,12 @@ function renderSummary() {
 
 renderSummary();
 
-// 5. 예약하기
-$("order-form").addEventListener("submit", (e) => {
+// 5. 예약하기 (서버에 저장)
+$("order-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const result = calc();
   const name = $("name").value.trim();
   const phone = $("phone").value.replace(/[^0-9]/g, "");
-  const date = $("pickup-date").value;
   let firstError = null;
 
   const check = (errId, message) => {
@@ -148,49 +248,60 @@ $("order-form").addEventListener("submit", (e) => {
   };
 
   check("err-items", result ? "" : "시술을 하나 골라주세요.");
-
-  if (!date || !$("pickup-time").value) {
-    check("err-pickup", "예약 날짜와 시간을 선택해 주세요.");
-  } else if (date < $("pickup-date").min || date > $("pickup-date").max) {
-    check("err-pickup", "예약은 내일부터 2주 이내로 선택할 수 있어요.");
-  } else if (new Date(date + "T00:00").getDay() === 1) {
-    check("err-pickup", "월요일은 휴무예요. 다른 날을 골라주세요.");
-  } else {
-    check("err-pickup", "");
-  }
+  check("err-pickup", selectedDate && selectedTime ? "" : "예약 날짜와 시간을 선택해 주세요.");
 
   if (!name) check("err-info", "이름을 입력해 주세요.");
   else if (!/^01[0-9]{8,9}$/.test(phone)) check("err-info", "연락처를 정확히 입력해 주세요. (예: 010-1234-5678)");
   else check("err-info", "");
 
-  if (firstError) {
-    firstError.closest(".step-box").scrollIntoView({ behavior: "smooth", block: "center" });
-    return;
-  }
+  const showError = (el) => el.closest(".step-box").scrollIntoView({ behavior: "smooth", block: "center" });
+  if (firstError) return showError(firstError);
 
-  const bookingNo = "N" + Date.now().toString().slice(-6);
-  const booking = {
-    bookingNo,
-    service: result.service.name,
-    total: result.total,
-    name,
-    phone,
-    datetime: pickupText(),
-    memo: $("memo").value.trim(),
-    coupon: couponCode,
-  };
+  const submitBtn = document.querySelector('button[form="order-form"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = "예약 중…";
 
-  // 서버가 없으므로 브라우저에 예약 내역을 저장해 둡니다
   try {
-    const bookings = JSON.parse(localStorage.getItem("n5d-bookings") || "[]");
-    bookings.push(booking);
-    localStorage.setItem("n5d-bookings", JSON.stringify(bookings));
-    if (couponCode) localStorage.removeItem("n5d-coupon"); // 쿠폰은 한 번만 사용
-  } catch {}
+    const res = await fetch("/api/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        service: selectedId,
+        date: selectedDate,
+        time: selectedTime,
+        name,
+        phone,
+        memo: $("memo").value.trim(),
+        coupon: couponCode,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
 
-  $("done-no").textContent = bookingNo;
-  $("done-list").innerHTML =
-    itemRows(result) + `<li class="done-total"><span>결제 예정</span><b>${won(result.total)}</b></li>`;
-  $("done-pickup").textContent = `📍 ${booking.datetime} 방문`;
-  $("done").hidden = false;
+    if (!res.ok) {
+      // 시간이 마감됐거나 날짜 문제면 시간표를 새로 고침
+      if (res.status === 409) {
+        selectedTime = "";
+        renderSummary();
+      }
+      await loadAvailability();
+      $("err-pickup").textContent = data.message || "예약에 실패했어요. 잠시 후 다시 시도해 주세요.";
+      return showError($("err-pickup"));
+    }
+
+    try {
+      if (couponCode) localStorage.removeItem("n5d-coupon"); // 쿠폰은 한 번만 사용
+    } catch {}
+
+    $("done-no").textContent = data.bookingNo;
+    $("done-list").innerHTML =
+      itemRows(result) + `<li class="done-total"><span>결제 예정</span><b>${won(data.total)}</b></li>`;
+    $("done-pickup").textContent = `📍 ${dateLabel(data.date)} ${data.time} 방문`;
+    $("done").hidden = false;
+  } catch {
+    $("err-pickup").textContent = "인터넷 연결을 확인하고 다시 시도해 주세요.";
+    showError($("err-pickup"));
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "예약하기";
+  }
 });

@@ -1,0 +1,17 @@
+{
+  "name": "no5dom-barbershop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "no.5dom 바버샵 홈페이지 + 예약 서버",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}

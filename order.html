@@ -39,19 +39,27 @@
         <!-- STEP 2. 예약 날짜·시간 -->
         <fieldset class="step-box">
           <legend><span>2</span>예약 날짜 · 시간</legend>
-          <div class="row">
-            <label class="field">
-              <span>날짜</span>
-              <input type="date" id="pickup-date" required />
-            </label>
-            <label class="field">
-              <span>시간</span>
-              <select id="pickup-time" required>
-                <option value="">시간 선택</option>
-              </select>
-            </label>
+          <div class="calendar">
+            <div class="cal-head">
+              <button type="button" class="cal-nav" id="cal-prev" aria-label="이전 달">‹</button>
+              <b id="cal-title"></b>
+              <button type="button" class="cal-nav" id="cal-next" aria-label="다음 달">›</button>
+            </div>
+            <div class="cal-week">
+              <span class="sun">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sat">토</span>
+            </div>
+            <div class="cal-grid" id="cal-grid">
+              <!-- order.js에서 날짜를 그립니다 -->
+            </div>
           </div>
-          <p class="hint">매주 월요일은 휴무입니다. 마지막 예약은 오후 8시예요.</p>
+
+          <div class="slots">
+            <p class="slots-title" id="slots-title">날짜를 선택해 주세요.</p>
+            <div id="slots"></div>
+          </div>
+
+          <p class="live" id="live-status">예약 현황을 불러오는 중…</p>
+          <p class="hint">매주 월요일은 휴무입니다. 오늘부터 2주 뒤까지 예약할 수 있어요.</p>
           <p class="error" id="err-pickup"></p>
         </fieldset>
 
