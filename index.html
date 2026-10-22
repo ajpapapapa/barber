@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>no.5dom Barber Shop</title>
+    <meta name="description" content="한 번의 커트로 한 달이 편해지는 스타일, no.5dom 바버샵" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- 상단 띠 배너 -->
+    <div class="topbar">첫 방문 고객 시술 10% 할인 · <a href="#cta">쿠폰 받기 ›</a></div>
+
+    <!-- 헤더 -->
+    <header class="header">
+      <div class="container header-inner">
+        <a href="#" class="logo">no.5dom<span>Barber</span></a>
+        <nav class="nav">
+          <a href="#menu">시술 메뉴</a>
+          <a href="#story">바버 소개</a>
+          <a href="#reviews">후기</a>
+          <a href="#process">시술 과정</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+        <a href="order.html" class="btn btn-accent btn-sm">예약하기</a>
+        <button class="menu-toggle" aria-label="메뉴 열기">☰</button>
+      </div>
+    </header>
+
+    <!-- 1. 히어로 -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <p class="eyebrow">NO.5DOM · BARBER SHOP</p>
+        <ul class="hero-tasks">
+          <li>뜨는 옆머리</li>
+          <li>덥수룩한 뒷머리</li>
+          <li>매일 아침 드라이</li>
+        </ul>
+        <h1 class="hero-title">
+          머리 손질할 시간,<br />
+          <span class="hl">없으셨죠?</span>
+        </h1>
+        <p class="hero-sub">
+          두상과 모질에 맞춘 1:1 커트.<br />
+          한 번 자르면 한 달이 편해집니다.
+        </p>
+        <div class="hero-btns">
+          <a href="#menu" class="btn btn-accent">시술 메뉴 보기 →</a>
+          <a href="#story" class="btn btn-ghost">바버 소개</a>
+        </div>
+        <a href="#menu" class="scroll-cue">스크롤해서 둘러보기<span>↓</span></a>
+      </div>
+    </section>
+
+    <!-- 2. 시술 메뉴 카드 -->
+    <section id="menu" class="section">
+      <div class="container">
+        <p class="label reveal">SERVICE MENU</p>
+        <h2 class="section-title reveal">필요한 것만,<br />정직한 가격으로.</h2>
+
+        <div class="cards">
+          <article class="card reveal">
+            <div class="card-img" style="background-image: url(images/web/cut5.jpg)"></div>
+            <span class="badge">BASIC</span>
+            <h3>커트</h3>
+            <p>두상과 모질을 보고 1:1 상담 후 자르는 기본 커트.</p>
+            <div class="card-foot"><strong>20,000원</strong><span class="duration">⏱ 약 20분</span></div>
+          </article>
+          <article class="card reveal">
+            <div class="card-img" style="background-image: url(images/web/cut2.jpg)"></div>
+            <span class="badge badge-point">BEST</span>
+            <h3>커트 + 다운펌</h3>
+            <p>뜨는 옆머리를 차분하게 눌러 손질이 쉬워집니다.</p>
+            <div class="card-foot"><strong>33,000원</strong><span class="duration">⏱ 약 40분</span></div>
+          </article>
+          <article class="card reveal">
+            <div class="card-img" style="background-image: url(images/web/cut4.jpg)"></div>
+            <span class="badge">PREMIUM</span>
+            <h3>아이롱펌</h3>
+            <p>커트 · 다운펌 포함. 볼륨과 컬을 한 번에 완성.</p>
+            <div class="card-foot"><strong>70,000원</strong><span class="duration">⏱ 약 60분</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 탭 쇼케이스 -->
+    <section class="section section-soft">
+      <div class="container">
+        <p class="label reveal">ONE BARBER, FIVE STYLES</p>
+        <h2 class="section-title reveal">가위 하나로,<br />다섯 가지 스타일.</h2>
+
+        <div class="showcase reveal">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="0">댄디컷</button>
+            <button class="tab" data-tab="1">투블럭</button>
+            <button class="tab" data-tab="2">리프컷</button>
+            <button class="tab" data-tab="3">크롭컷</button>
+            <button class="tab" data-tab="4">포마드</button>
+          </div>
+          <div class="panel">
+            <span class="counter"><b id="tab-num">01</b> / 05</span>
+            <h3 id="tab-title">댄디컷</h3>
+            <p id="tab-desc">앞머리를 자연스럽게 내려 부드럽고 깔끔한 인상으로.</p>
+            <ul class="panel-meta">
+              <li>손질 시간 <b id="tab-time">3분</b></li>
+              <li>난이도 <b id="tab-level">쉬움</b></li>
+              <li>추천 시술 <b id="tab-pair">커트 + 다운펌</b></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 바버 소개 -->
+    <section id="story" class="section section-dark">
+      <div class="container story">
+        <div class="story-img reveal"></div>
+        <div class="story-text">
+          <p class="label reveal">ABOUT BARBER</p>
+          <h2 class="section-title reveal">오늘도 한 명씩,<br />제대로 자릅니다.</h2>
+          <ul class="profile reveal">
+            <li><span>경력</span>바버 경력 5년</li>
+            <li><span>전문</span>남성 펌 · 페이드 컷</li>
+            <li><span>원칙</span>1인 1바버, 끝까지 한 사람이 책임</li>
+          </ul>
+          <div class="stats">
+            <div class="stat reveal"><b class="count" data-to="15000">0</b><span>누적 고객(명)</span></div>
+            <div class="stat reveal"><b class="count" data-to="87">0</b><span>재방문율(%)</span></div>
+            <div class="stat reveal"><b class="count" data-to="12">0</b><span>하루 예약 정원(명)</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 후기 (흐르는 카드) -->
+    <section id="reviews" class="section">
+      <div class="container">
+        <p class="label reveal">REVIEWS</p>
+        <h2 class="section-title reveal">고객 후기</h2>
+        <p class="rating reveal"><span class="stars">★★★★★</span> 후기 128개, 평균 <b>4.9</b></p>
+      </div>
+      <div class="marquee">
+        <div class="marquee-track">
+          <!-- 내용은 main.js에서 두 번 복제해 끊김 없이 흐르게 합니다 -->
+          <blockquote class="review"><span class="stars">★★★★★</span><p>“다운펌 하고 아침 준비 시간이 반으로 줄었어요.”</p><cite>김*현 · 2026.10.12</cite></blockquote>
+          <blockquote class="review"><span class="stars">★★★★★</span><p>“말 안 해도 두상에 맞게 알아서 잘라주십니다.”</p><cite>이*호 · 2026.10.08</cite></blockquote>
+          <blockquote class="review"><span class="stars">★★★★★</span><p>“아이롱펌 처음 해봤는데 인생 머리 찾았습니다.”</p><cite>박*준 · 2026.10.03</cite></blockquote>
+          <blockquote class="review"><span class="stars">★★★★★</span><p>“매장 분위기 최고. 기다리는 시간도 즐거워요.”</p><cite>최*민 · 2026.09.29</cite></blockquote>
+          <blockquote class="review"><span class="stars">★★★★☆</span><p>“주말은 예약 필수! 금방 마감됩니다.”</p><cite>정*우 · 2026.09.21</cite></blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 시술 과정 -->
+    <section id="process" class="section section-soft">
+      <div class="container">
+        <p class="label reveal">PROCESS · 5 STEPS</p>
+        <h2 class="section-title reveal">상담부터 스타일링까지,<br />하나도 서두르지 않습니다.</h2>
+        <ol class="steps">
+          <li class="step reveal"><span>STEP 1</span><b>상담</b><p>두상 · 모질 · 평소 손질 습관 체크</p></li>
+          <li class="step reveal"><span>STEP 2</span><b>샴푸</b><p>두피 타입에 맞춘 샴푸</p></li>
+          <li class="step reveal"><span>STEP 3</span><b>커트</b><p>가위와 클리퍼로 라인 정리</p></li>
+          <li class="step reveal"><span>STEP 4</span><b>펌 · 다운펌</b><p>원하는 볼륨과 방향 잡기</p></li>
+          <li class="step reveal"><span>STEP 5</span><b>스타일링</b><p>집에서 따라 할 손질법 안내</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 7. FAQ -->
+    <section id="faq" class="section">
+      <div class="container narrow">
+        <p class="label reveal">BEFORE YOU VISIT</p>
+        <h2 class="section-title reveal">방문 전에<br />확인하세요.</h2>
+        <div class="faq">
+          <details class="reveal">
+            <summary>예약 없이 방문해도 되나요?</summary>
+            <p>예약 고객 우선으로 진행됩니다. 빈 시간이 있으면 바로 시술해 드리지만, 예약을 권장드려요.</p>
+          </details>
+          <details class="reveal">
+            <summary>영업시간이 어떻게 되나요?</summary>
+            <p>매일 오전 10시 ~ 오후 9시, 매주 월요일은 휴무입니다. 마지막 예약은 오후 8시입니다.</p>
+          </details>
+          <details class="reveal">
+            <summary>다운펌은 얼마나 유지되나요?</summary>
+            <p>모질에 따라 다르지만 보통 4~6주 정도 유지됩니다. 커트 주기와 맞추시면 가장 좋아요.</p>
+          </details>
+          <details class="reveal">
+            <summary>예약 변경이나 취소는 어떻게 하나요?</summary>
+            <p>예약 3시간 전까지 전화나 문자로 알려주시면 무료로 변경 · 취소해 드립니다.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. 마지막 CTA -->
+    <section id="cta" class="cta">
+      <div class="container">
+        <p class="label">FIRST VISIT</p>
+        <h2 class="cta-title">머리는,<br /><span class="hl">no.5dom이 할게요.</span></h2>
+        <button type="button" class="btn btn-accent btn-lg" id="coupon-btn">첫 방문 쿠폰 받기 →</button>
+        <p class="cta-note">회원가입 없이 바로 받을 수 있어요.</p>
+      </div>
+    </section>
+
+    <!-- 쿠폰 팝업 -->
+    <dialog class="coupon" id="coupon">
+      <button type="button" class="coupon-close" aria-label="닫기">×</button>
+      <p class="label">WELCOME COUPON</p>
+      <h3>첫 방문 10% 할인</h3>
+      <p class="coupon-desc">예약할 때 아래 코드를 입력해 주세요.</p>
+      <div class="coupon-code">
+        <b id="coupon-code">N5D-0000</b>
+        <button type="button" id="coupon-copy">복사</button>
+      </div>
+      <a href="order.html" class="btn btn-accent btn-block" id="coupon-order">이 쿠폰으로 예약하기 →</a>
+      <small>발급일로부터 30일 이내 · 1인 1회</small>
+    </dialog>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+      <div class="container">
+        <a href="#" class="logo">no.5dom<span>Barber</span></a>
+        <p>대구광역시 달서구 서당로7길 39-8 · 영업시간 10:00 – 20:00 (일 휴무)</p>
+        <p>예약 문의 010-1234-5678 · hoonitalmo@no5dom.com</p>
+        <nav class="footer-links">
+          <a href="#">이용약관</a><a href="#">개인정보처리방침</a><a href="#faq">자주 묻는 질문</a>
+        </nav>
+        <small>Copyright © 2026 no.5dom Barber Shop. All rights reserved.</small>
+      </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>

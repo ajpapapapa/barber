@@ -1,0 +1,413 @@
+/* ===== 예약 주문 페이지 ===== */
+.order-page {
+  background: var(--soft);
+}
+
+.back-link {
+  margin-left: auto;
+  font-size: 15px;
+  opacity: 0.8;
+}
+
+.order-wrap {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 32px;
+  align-items: start;
+  padding-block: 64px 120px;
+}
+
+.order-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 900;
+  letter-spacing: -1.5px;
+}
+
+.order-lead {
+  color: var(--muted);
+  margin: 8px 0 32px;
+}
+
+/* 단계 박스 */
+.step-box {
+  border: 0;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.step-box legend {
+  float: left;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.step-box legend span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--point);
+  color: #fff;
+  font-size: 14px;
+}
+
+/* 메뉴 목록 */
+.menu-list {
+  clear: both;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.menu-thumb {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center 30%;
+}
+
+.menu-info {
+  flex: 1;
+}
+
+.menu-info b {
+  display: block;
+}
+
+.menu-info span {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.qty button {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.qty button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.qty output {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* 시술 선택 (라디오) */
+.service {
+  cursor: pointer;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.service:hover {
+  border-color: var(--point-soft);
+}
+
+.service input {
+  accent-color: var(--point);
+  width: 18px;
+  height: 18px;
+}
+
+.service:has(input:checked) {
+  border-color: var(--point);
+  background: #fbf1ef;
+}
+
+.service-price {
+  font-size: 17px;
+}
+
+/* 입력칸 */
+.row {
+  clear: both;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  clear: both;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.field span {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.field input,
+.field select,
+.field textarea,
+.coupon-row input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font: inherit;
+  background: #fff;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+.coupon-row input:focus {
+  outline: 2px solid var(--point);
+  border-color: transparent;
+}
+
+.coupon-row {
+  clear: both;
+  display: flex;
+  gap: 8px;
+}
+
+.coupon-row input {
+  text-transform: uppercase;
+}
+
+.btn-outline {
+  flex-shrink: 0;
+  padding: 0 24px;
+  border: 1px solid var(--point);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--point);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.hint.ok {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.hint.bad {
+  color: #e5484d;
+}
+
+.error {
+  font-size: 14px;
+  color: #e5484d;
+  font-weight: 600;
+}
+
+.error:not(:empty) {
+  margin-top: 8px;
+}
+
+/* 주문 요약 */
+.summary {
+  position: sticky;
+  top: 88px;
+  background: var(--dark);
+  color: #fff;
+  border-radius: 24px;
+  padding: 28px;
+}
+
+.summary h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.summary-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 15px;
+}
+
+.summary-list .empty {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.summary-list .gift {
+  color: var(--accent);
+}
+
+.summary-pickup {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+  margin-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 15px;
+}
+
+.summary-pickup dt {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 16px 0 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.summary-total b {
+  font-size: 28px;
+  color: var(--accent);
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.summary-note {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 주문 완료 */
+.done {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(11, 13, 18, 0.75);
+  backdrop-filter: blur(6px);
+}
+
+.done[hidden] {
+  display: none;
+}
+
+.done-card {
+  width: min(440px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 40px 32px;
+  border-radius: 24px;
+  background: #fff;
+  text-align: center;
+  animation: rise 0.4s;
+}
+
+.done-icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.done-card h2 {
+  font-size: 28px;
+}
+
+.done-no {
+  margin: 8px 0 20px;
+  color: var(--muted);
+}
+
+.done-no b {
+  color: var(--point);
+}
+
+.done-list {
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: var(--soft);
+  text-align: left;
+}
+
+.done-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.done-list .done-total {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.done-list .gift {
+  color: var(--point);
+}
+
+.done-pickup {
+  margin-top: 16px;
+  font-weight: 700;
+}
+
+.done-card .btn {
+  margin-top: 24px;
+}
+
+@media (max-width: 900px) {
+  .order-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .summary {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .step-box {
+    padding: 22px 18px;
+  }
+}

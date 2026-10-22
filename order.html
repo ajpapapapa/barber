@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>예약하기 | no.5dom Barber Shop</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/order.css" />
+  </head>
+  <body class="order-page">
+    <!-- 헤더 -->
+    <header class="header">
+      <div class="container header-inner">
+        <a href="index.html" class="logo">no.5dom<span>Barber</span></a>
+        <a href="index.html" class="back-link">← 메인으로</a>
+      </div>
+    </header>
+
+    <main class="container order-wrap">
+      <!-- 예약 폼 -->
+      <form id="order-form" class="order-form" novalidate>
+        <p class="label">BOOKING</p>
+        <h1 class="order-title">시술 예약</h1>
+        <p class="order-lead">원하는 시술과 시간을 고르시면, 바버가 자리를 비워두고 기다릴게요.</p>
+
+        <!-- STEP 1. 시술 고르기 -->
+        <fieldset class="step-box">
+          <legend><span>1</span>시술 고르기</legend>
+          <ul class="menu-list" id="menu-list">
+            <!-- order.js에서 시술 목록을 그립니다 -->
+          </ul>
+          <p class="error" id="err-items"></p>
+        </fieldset>
+
+        <!-- STEP 2. 예약 날짜·시간 -->
+        <fieldset class="step-box">
+          <legend><span>2</span>예약 날짜 · 시간</legend>
+          <div class="row">
+            <label class="field">
+              <span>날짜</span>
+              <input type="date" id="pickup-date" required />
+            </label>
+            <label class="field">
+              <span>시간</span>
+              <select id="pickup-time" required>
+                <option value="">시간 선택</option>
+              </select>
+            </label>
+          </div>
+          <p class="hint">매주 월요일은 휴무입니다. 마지막 예약은 오후 8시예요.</p>
+          <p class="error" id="err-pickup"></p>
+        </fieldset>
+
+        <!-- STEP 3. 예약자 정보 -->
+        <fieldset class="step-box">
+          <legend><span>3</span>예약자 정보</legend>
+          <div class="row">
+            <label class="field">
+              <span>이름</span>
+              <input type="text" id="name" placeholder="홍길동" required />
+            </label>
+            <label class="field">
+              <span>연락처</span>
+              <input type="tel" id="phone" placeholder="010-0000-0000" required />
+            </label>
+          </div>
+          <label class="field">
+            <span>요청사항 (선택)</span>
+            <textarea id="memo" rows="3" placeholder="예) 옆머리는 짧게, 윗머리는 길이 유지해 주세요"></textarea>
+          </label>
+          <p class="error" id="err-info"></p>
+        </fieldset>
+
+        <!-- STEP 4. 쿠폰 -->
+        <fieldset class="step-box">
+          <legend><span>4</span>쿠폰</legend>
+          <div class="coupon-row">
+            <input type="text" id="coupon-input" placeholder="N5D-XXXX" />
+            <button type="button" class="btn-outline" id="coupon-apply">적용</button>
+          </div>
+          <p class="hint" id="coupon-msg">첫 방문 쿠폰이 있다면 입력해 주세요.</p>
+        </fieldset>
+      </form>
+
+      <!-- 예약 요약 (오른쪽 고정) -->
+      <aside class="summary">
+        <h2>예약 요약</h2>
+        <ul class="summary-list" id="summary-list">
+          <li class="empty">아직 고른 시술이 없어요.</li>
+        </ul>
+        <dl class="summary-pickup">
+          <dt>예약 일시</dt>
+          <dd id="summary-pickup">-</dd>
+        </dl>
+        <div class="summary-total">
+          <span>결제 예정 금액</span>
+          <b id="summary-total">0원</b>
+        </div>
+        <button type="submit" form="order-form" class="btn btn-accent btn-block">예약하기</button>
+        <p class="summary-note">결제는 시술 후 매장에서 해주세요.</p>
+      </aside>
+    </main>
+
+    <!-- 예약 완료 화면 -->
+    <section class="done" id="done" hidden>
+      <div class="done-card">
+        <div class="done-icon">✓</div>
+        <p class="label">BOOKING COMPLETE</p>
+        <h2>예약이 완료됐어요!</h2>
+        <p class="done-no">예약번호 <b id="done-no"></b></p>
+        <ul class="done-list" id="done-list"></ul>
+        <p class="done-pickup" id="done-pickup"></p>
+        <p class="hint">방문하시면 예약번호나 이름을 말씀해 주세요.</p>
+        <a href="index.html" class="btn btn-accent">메인으로 돌아가기</a>
+      </div>
+    </section>
+
+    <script src="js/order.js"></script>
+  </body>
+</html>
