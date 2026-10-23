@@ -32,7 +32,7 @@ function toTime(min) {
 // 시술 시간을 30분 칸으로 올림 (40분 → 60분)
 const blockMinutes = (minutes) => Math.ceil(minutes / STEP) * STEP;
 
-// Render 서버는 UTC로 돌아가므로 한국 시간을 직접 계산
+// 배포 서버는 보통 UTC로 돌아가므로 한국 시간을 직접 계산
 function nowKST() {
   const d = new Date(Date.now() + 9 * 60 * 60 * 1000);
   return { date: d.toISOString().slice(0, 10), minutes: d.getUTCHours() * 60 + d.getUTCMinutes() };
@@ -73,16 +73,18 @@ function isBookable(date, time, now) {
 const app = express();
 app.use(express.json({ limit: "10kb" }));
 
-// 화면 파일만 공개 (server.js, data/ 등은 밖으로 나가지 않게)
-const root = (file) => path.join(__dirname, file);
-app.get(["/", "/index.html"], (req, res) => res.sendFile(root("index.html")));
-app.get("/order.html", (req, res) => res.sendFile(root("order.html")));
-app.get("/admin.html", (req, res) => res.sendFile(root("admin.html")));
-for (const dir of ["css", "js", "images"]) app.use("/" + dir, express.static(root(dir)));
+// 화면 파일은 public/ 폴더만 공개 (Vercel에서는 public/을 Vercel이 직접 내보냄)
+app.use(express.static(path.join(__dirname, "public")));
 
+// 첫 API 요청 때 한 번만 저장소 준비 (테이블 만들기)
+let ready = null;
 app.use("/api", (req, res, next) => {
   res.set("Cache-Control", "no-store");
-  next();
+  ready ??= store.init().catch((err) => {
+    ready = null; // 실패하면 다음 요청 때 다시 시도
+    throw err;
+  });
+  ready.then(() => next(), next);
 });
 
 // 예약 가능 시간 (시술을 안 골랐으면 30분 기준)
@@ -204,13 +206,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "서버에 문제가 생겼어요. 잠시 후 다시 시도해 주세요." });
 });
 
-const PORT = process.env.PORT || 3000;
-store
-  .init()
-  .then(() => {
-    app.listen(PORT, () => console.log(`no.5dom 서버 실행 중 → http://localhost:${PORT} (저장소: ${store.kind})`));
-  })
-  .catch((err) => {
-    console.error("저장소 연결 실패:", err);
-    process.exit(1);
-  });
+// Vercel은 이 app을 가져가서 실행
+module.exports = app;
+
+// 내 컴퓨터에서 npm start로 실행할 때만 서버를 직접 켬
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`no.5dom 서버 실행 중 → http://localhost:${PORT} (저장소: ${store.kind})`));
+}
